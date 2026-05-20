@@ -369,6 +369,49 @@
   /* ── SAFE AREA ── */
   .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
 
+  /* ── 지역별 금액 레이아웃 ── */
+  .amt-header {
+    display: flex; align-items: center;
+    padding: 7px 12px;
+    background: var(--blue-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  }
+  .amt-region-col { flex: 0 0 42%; }
+  .amt-cols {
+    flex: 1; display: flex; gap: 4px;
+  }
+  .amt-header .amt-cols span {
+    flex: 1; text-align: center;
+    font-size: 11px; font-weight: 700; color: var(--blue-dark);
+    word-break: keep-all; line-height: 1.3;
+  }
+  .amt-row {
+    display: flex; align-items: center;
+    padding: 10px 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: none;
+  }
+  .amt-row:last-of-type {
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  }
+  .amt-label {
+    flex: 0 0 42%; padding-right: 6px;
+    font-size: 13px; display: flex; flex-direction: column; gap: 2px;
+  }
+  .amt-sub {
+    font-size: 11px; color: var(--text-3);
+  }
+  .amt-row .amt-cols {
+    flex: 1; display: flex; gap: 4px;
+  }
+  .amt-row .amt-cols .badge {
+    flex: 1; text-align: center;
+    padding: 4px 2px; font-size: 12px;
+    white-space: nowrap;
+  }
+
   /* ── 가맹점 조회 ── */
   .merchant-group-label {
     font-size: 12px; font-weight: 700; color: var(--text-3);
@@ -447,10 +490,16 @@
     border-radius: 20px; padding: 2px 9px; font-size: 11px; font-weight: 700;
     border: 1px solid var(--green-border); white-space: nowrap;
   }
-  .yoil-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 14px; }
+  .yoil-scroll-wrap {
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    margin-bottom: 14px; scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .yoil-scroll-wrap::-webkit-scrollbar { display: none; }
+  .yoil-grid { display: flex; gap: 8px; width: max-content; padding-bottom: 2px; }
   .yoil-day {
-    background: var(--card); border-radius: 8px; padding: 8px 4px;
-    text-align: center; border: 1.5px solid #b8d5f5; transition: all .15s;
+    flex: 0 0 72px;
+    background: var(--card); border-radius: 10px; padding: 10px 6px;
+    text-align: center; border: 1.5px solid #b8d5f5; transition: all .2s;
   }
   .yoil-day.today { background: var(--blue-dark); border-color: var(--blue-dark); }
   .yoil-day.past { opacity: .45; }
@@ -718,35 +767,67 @@
   <!-- 지역별 금액 -->
   <div class="section">
     <div class="section-title"><i class="ti ti-map-pin"></i>지역별 지급 금액 (2차)</div>
-    <div class="tbl-wrap">
-      <table>
-        <thead>
-          <tr><th>지역 구분</th><th>일반</th><th>한부모·차상위</th><th>기초수급자</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>수도권</strong></td><td><span class="badge">10만</span></td><td><span class="badge">45만</span></td><td><span class="badge">55만</span></td></tr>
-          <tr><td><strong>비수도권</strong></td><td><span class="badge">15만</span></td><td><span class="badge">50만</span></td><td><span class="badge">60만</span></td></tr>
-          <tr>
-            <td>
-              <button class="modal-link" onclick="openModal('modal-ude')">
-                <i class="ti ti-external-link" style="font-size:12px;vertical-align:-1px"></i> 인구감소 우대지역
-              </button>
-              <span style="display:block;font-size:11px;color:var(--text-3);margin-top:2px">49개 시·군·구</span>
-            </td>
-            <td><span class="badge">20만</span></td><td><span class="badge">50만</span></td><td><span class="badge">60만</span></td>
-          </tr>
-          <tr>
-            <td>
-              <button class="modal-link-special" onclick="openModal('modal-special')">
-                <i class="ti ti-external-link" style="font-size:12px;vertical-align:-1px"></i> 인구감소 특별지역
-              </button>
-              <span style="display:block;font-size:11px;color:var(--text-3);margin-top:2px">40개 시·군</span>
-            </td>
-            <td><span class="badge">25만</span></td><td><span class="badge">50만</span></td><td><span class="badge">60만</span></td>
-          </tr>
-        </tbody>
-      </table>
+
+    <!-- 헤더 라벨 -->
+    <div class="amt-header">
+      <div class="amt-region-col"></div>
+      <div class="amt-cols">
+        <span>일반</span>
+        <span>한부모·차상위</span>
+        <span>기초수급자</span>
+      </div>
     </div>
+
+    <!-- 수도권 -->
+    <div class="amt-row">
+      <div class="amt-label"><strong>수도권</strong></div>
+      <div class="amt-cols">
+        <span class="badge">10만 원</span>
+        <span class="badge">45만 원</span>
+        <span class="badge">55만 원</span>
+      </div>
+    </div>
+
+    <!-- 비수도권 -->
+    <div class="amt-row">
+      <div class="amt-label"><strong>비수도권</strong></div>
+      <div class="amt-cols">
+        <span class="badge">15만 원</span>
+        <span class="badge">50만 원</span>
+        <span class="badge">60만 원</span>
+      </div>
+    </div>
+
+    <!-- 우대지역 -->
+    <div class="amt-row">
+      <div class="amt-label">
+              <button class="modal-link" onclick="openModal('modal-ude')">
+          <i class="ti ti-external-link" style="font-size:11px;vertical-align:-1px"></i> 인구감소 우대지역
+              </button>
+        <span class="amt-sub">49개 시·군·구</span>
+      </div>
+      <div class="amt-cols">
+        <span class="badge">20만 원</span>
+        <span class="badge">50만 원</span>
+        <span class="badge">60만 원</span>
+      </div>
+    </div>
+
+    <!-- 특별지역 -->
+    <div class="amt-row" style="border-bottom:none">
+      <div class="amt-label">
+        <button class="modal-link" onclick="openModal('modal-special')">
+          <i class="ti ti-external-link" style="font-size:11px;vertical-align:-1px"></i> 인구감소 특별지역
+              </button>
+        <span class="amt-sub">40개 시·군</span>
+      </div>
+      <div class="amt-cols">
+        <span class="badge">25만 원</span>
+        <span class="badge">50만 원</span>
+        <span class="badge">60만 원</span>
+      </div>
+    </div>
+
     <div class="alert alert-amber" style="margin-top:10px">
       <i class="ti ti-info-circle"></i>
       <p>1차·2차 지원금 사용 기한은 <strong>2026년 8월 31일</strong>까지이며, 미사용 지원금은 소멸됩니다.</p>
@@ -808,6 +889,7 @@
     <span>첫 주 출생연도 끝자리 요일제 <span class="yoil-period">(5.18 ~ 5.22)</span></span>
     <span class="yoil-free">5.23부터 자유 신청</span>
   </div>
+  <div class="yoil-scroll-wrap" id="yoilScrollWrap">
   <div class="yoil-grid">
     <div class="yoil-day" id="yoil-0">
       <div class="yoil-label">월 <span class="yoil-date-sm">5.18</span></div>
@@ -829,6 +911,7 @@
       <div class="yoil-label">금 <span class="yoil-date-sm">5.22</span></div>
       <div class="yoil-digits"><span class="yoil-num">5</span><span class="yoil-num">0</span></div>
     </div>
+  </div>
   </div>
   <!-- 내 신청일 계산기 -->
   <div class="yoil-calc">
@@ -1033,8 +1116,20 @@ function calcYoil(){
     res.innerHTML='✅ <strong>'+year+'년생</strong>은 요일 제한 없이 지금 바로 신청 가능합니다.<br><span style="font-size:12px">요일제 기간(5.18~5.22)이 종료되었습니다.</span>';
     res.style.display='block'; return;
   }
+  // 하이라이트 카드로 스크롤
   var el=document.getElementById('yoil-'+info.idx);
   if(el) el.classList.add('highlight');
+  // 스크롤 래퍼에서 해당 카드가 보이도록 가로 스크롤
+  setTimeout(function(){
+    var wrap=document.getElementById('yoilScrollWrap');
+    var card=document.getElementById('yoil-'+info.idx);
+    if(wrap && card){
+      var cardLeft = card.offsetLeft;
+      var cardWidth = card.offsetWidth;
+      var wrapWidth = wrap.offsetWidth;
+      wrap.scrollTo({ left: cardLeft - (wrapWidth/2) + (cardWidth/2), behavior:'smooth' });
+    }
+  }, 80);
   var todayIdx=(y===2026&&m===5&&d>=18&&d<=22)?d-18:-1;
   var isToday=(todayIdx===info.idx);
   var html='';
